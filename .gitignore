@@ -101,7 +101,8 @@ venv.bak/
 .mypy_cache/
 
 # custom 
-data/test/
-data/train/
-data/valid/
+data/mnist/test/
+data/mnist/train/
+data/mnist/valid/
 output*/
+data/cifar10/
