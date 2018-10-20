@@ -23,9 +23,9 @@ FLAGS = flags.FLAGS
 
 ################## YOU Should write under parameter ######################
 DEFINE_string("output_dir", "./output" , "")
-DEFINE_string("train_data_dir", "./data./train", "")
-DEFINE_string("val_data_dir", "./data./valid", "")
-DEFINE_string("test_data_dir", "./data./test", "")
+DEFINE_string("train_data_dir", "./data/train", "")
+DEFINE_string("val_data_dir", "./data/valid", "")
+DEFINE_string("test_data_dir", "./data/test", "")
 DEFINE_integer("channel",1, "MNIST: 1, Cifar10: 3")
 DEFINE_integer("img_size", 32, "enlarge image size")
 DEFINE_integer("n_aug_img",1 , "if 2: num_img: 55000 -> aug_img: 110000, elif 1: False")
@@ -60,7 +60,7 @@ DEFINE_float("child_l2_reg", 0, "")
 DEFINE_float("child_lr_max", 0.05, "for lr schedule")
 DEFINE_float("child_lr_min", 0.0005, "for lr schedule")
 DEFINE_string("child_skip_pattern", None, "Must be ['dense', None]")
-DEFINE_string("child_fixed_arc", "", "")
+DEFINE_string("child_fixed_arc", None, "")
 DEFINE_boolean("child_use_aux_heads", True, "Should we use an aux head")
 DEFINE_boolean("child_sync_replicas", False, "To sync or not to sync.")
 DEFINE_boolean("child_lr_cosine", True, "Use cosine lr schedule")
@@ -95,40 +95,6 @@ channel = FLAGS.channel
 def print_all_vars():
     for i in tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES ):
         print(i)
-
-
-# # # ------------- MNIST Unpack and Augment Code------------
-# def mnist_process(x):
-#     for j in range(len(x)):
-#         x[j] = x[j]*2-1
-#         if(len(x[j][0]) == 784):
-#             x[j] = np.float32(np.reshape(x[j], [-1, 28, 28, 1]))
-#     return x
-
-# def reverse_one_hot(y):
-#     y_new = []
-#     for i in range(len(y)):
-#         for j in range(len(y[i])):
-#             if(y[i][j] == 1):
-#                 y_new.append(j)
-#     return np.array(y_new, dtype = np.int32)
-
-
-# train_total_data, train_size, test_data, test_labels = mnist_data.prepare_MNIST_data(False)
-# train_data = train_total_data[:, :-10]
-# train_labels = train_total_data[:, -10:]
-
-# x = [train_data, train_labels, test_data, test_labels]
-# x_train, y_train, x_test, y_test = mnist_process(x)
-# images = {} 
-# labels = {}
-# images['train'], images['valid'], images['test'], labels['train'], labels['valid'], labels['test'] = x_train, x_test, x_test, reverse_one_hot(y_train), reverse_one_hot(y_test), reverse_one_hot(y_test)
-
-# print("X train: ", x_train.shape, (x_train.dtype))
-# print("Y train: ", y_train.shape)
-
-# # # --------------------------------------------------------
-
 
 
 def get_ops(images, labels):

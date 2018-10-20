@@ -18,6 +18,7 @@ import data_utils
 from micro_controller import MicroController
 from micro_child import MicroChild
 from data_utils_cifar import read_data
+
 flags = tf.app.flags
 FLAGS = flags.FLAGS
 
