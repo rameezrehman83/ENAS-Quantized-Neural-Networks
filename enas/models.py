@@ -4,8 +4,8 @@ import sys
 import numpy as np
 import tensorflow as tf
 
-from utils import count_model_params
-from utils import get_train_ops
+from enas.utils import count_model_params
+from enas.utils import get_train_ops
 
 class Model(object):
     def __init__(self,

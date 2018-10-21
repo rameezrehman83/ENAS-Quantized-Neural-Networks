@@ -7,17 +7,16 @@ import time
 import tensorflow as tf
 import numpy as np
 import keras.backend as K
-from utils import Logger
-from utils import DEFINE_boolean
-from utils import DEFINE_float
-from utils import DEFINE_integer
-from utils import DEFINE_string
-from utils import print_user_flags
-import mnist_data
-import data_utils
-from micro_controller import MicroController
-from micro_child import MicroChild
-from data_utils_cifar import read_data
+from enas.utils import Logger
+from enas.utils import DEFINE_boolean
+from enas.utils import DEFINE_float
+from enas.utils import DEFINE_integer
+from enas.utils import DEFINE_string
+from enas.utils import print_user_flags
+import enas.data_utils
+from enas.micro_controller import MicroController
+from enas.micro_child import MicroChild
+from enas.data_utils_cifar import read_data
 
 flags = tf.app.flags
 FLAGS = flags.FLAGS

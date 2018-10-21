@@ -4,8 +4,8 @@ import random
 import cv2
 import numpy as np
 from glob import *
-import utils
-from utils import plot_data_label
+import enas.utils
+from enas.utils import plot_data_label
 
 random.seed(random.randint(0, 2 ** 31 - 1))
 

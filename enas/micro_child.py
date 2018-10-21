@@ -3,10 +3,10 @@ import sys
 import numpy as np
 import tensorflow as tf
 from keras import backend as K
-from models import Model
-from common_ops import batch_norm
-from common_ops import drop_path
-from common_ops import global_avg_pool
+from enas.models import Model
+from enas.common_ops import batch_norm
+from enas.common_ops import drop_path
+from enas.common_ops import global_avg_pool
 from binarize.binary_ops import binary_tanh as binary_tanh_op
 from binarize.binary_layers import BinaryDense, BinaryConv2D, DepthwiseBinaryConv2D
 from ternarize.ternary_layers import TernaryDense, TernaryConv2D, DepthwiseTernaryConv2D
