@@ -25,9 +25,9 @@ Project Setup
 -----
 The weight sharing mechanism works by intializing the weights of the DAG only once and reusing them over various iterations, the methods used for this are `create_weight` and `create_bias` defined in `common_ops.py` (Add Link).
 
-In the author's code, they add these weights to the layers using [tf.nn module][9] in Tensorflow which allows the user to set custom weights to a new layer. 
+In the author's code (add link), they add these weights to the layers using [tf.nn module][9] in Tensorflow which allows the user to set custom weights to a new layer. 
 
-Now, we are searching in the space of quantized neural networks, and to implement the quantization we use custom keras layers and there is no provision to set custom weights to these layers. In the custom layer, the weights are defined using `self.add_weight` method which is defined locally in the keras installation folder. 
+Now, we are searching in the space of quantized neural networks, and to implement the quantization we use custom keras layers and there is no provision to set resusable weights to these layers. In the custom layer, the weights are defined using `self.add_weight` method which is defined locally in --- file the keras installation folder. 
 
 Now, I tweaked this method slightly so that it allows to set custom weights to the layers. It is definitely not a good idea to tweak this in your global installation of Keras, and I strongly suggest using a virtual environment for this. 
 
