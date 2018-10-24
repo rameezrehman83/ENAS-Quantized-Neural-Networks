@@ -6,13 +6,23 @@
 
 Introduction
 ------------
-Neural Architecture Search is a sub-field of AutoML which has recently gained popularity for generating state-of-the-art architectures on various tasks of Image Processing and Natural Language Processing. 
+Neural Architecture Search is a sub-field of AutoML, which garnered popularity after Neural Architecture Search with RL showed promising results. 
 
+ENAS shares parameters across child models that allows for strong empirical performance, and delivers strong empirical performance. 
 
-Progressive Neural Architecture Search searches through the space in a sequential fashion starting with simplest models and increasing the complexity as it proceeds. It learns a surrogate reward predictor implemented as a RNN to reduce the overhead of training every proposed architecture. 
+The bottleneck of using NAS remains the computational resources needed for it, ENAS provides a very efficient way to cope up with these drawbacks by reusing parameters across child models by sharing them. 
+
+These child models are sub-graphs selected from a large computational graph which can be visualized as a directed acyclic graph. 
+
+In ENAS, a controller discovers neural network architectures by searching for an optimal subgraph within a large computational graph. 
+
+The controller is trained with policy gradient to select a subgraph that maximizes the expected reward on a validation set. 
+
+Meanwhile the model corresponding to the selected subgraph is trained to minimize a canonical cross entropy loss. Sharing parameters among child models allows ENAS to deliver strong empirical performances,
+
 
 <p align="center">
-  <img src="https://imgur.com/JyGBZyh.png">
+  <img src="https://imgur.com/u5ALF0u.png">
 </p>
 
 
