@@ -51,6 +51,32 @@ Project Structure
 The skeletal overview of the project is as follows: 
 
 ```bash
+
+├── binarize/
+│   ├── binary_layers.py  # Custom binary layers are defined in Keras 
+│   └── binary_ops.py     # Binarization functions for weights and activations
+|
+├── ternarize/
+│   ├── ternary_layers.py  # Custom ternarized layers are defined in Keras
+│   └── ternary_ops.py     # Ternarization functions for weights and activations
+|
+├── quantize/
+│   ├── quantized_layers.py  # Custom quantized layers are defined in Keras
+│   └── quantized_ops.py     # Quantization functions for weights and activations
+|
+├── enas/                               
+│   ├── data_utils.py & data_utils_cifar.py  # Code to pre-process and import datasets
+│   ├── micro_controller.py                  # Builds the controller graph 
+│   ├── common_ops.py                        # Contain methods needed for reusing weights
+│   ├── models.py & controller.py            # Base classes for MicroChild and MicroController
+│   ├── utils.py                             # Methods to build training operations graph
+│   └── micro_child.py                       # Builds the graph for child model from the architecture string
+|
+├── base_ops.py           # Stores generic operations              
+└── quantized_net.py      # Implementation of Quantized Neural Networks
+
+
+
 .
 ├── binarized/
 │   ├── binary_layers.py  # Custom binary layers are defined in Keras 
