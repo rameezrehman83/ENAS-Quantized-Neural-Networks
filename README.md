@@ -33,18 +33,26 @@ Binarization function used in the experiment is deterministic binary-tanh which 
 
 Project Setup 
 -----
-The weight sharing mechanism works by intializing the weights of the DAG only once and reusing them over various iterations, the methods used for this are `create_weight` and `create_bias` defined in `common_ops.py` (Add Link).
+The weight sharing mechanism works by intializing the weights of the DAG only once and reusing them over various iterations, the methods used for this are `create_weight` and `create_bias` defined in [`common_ops.py`][14]. 
 
-In the author's code (add link), they add these weights to the layers using [tf.nn module][9] in Tensorflow which allows the user to set custom weights to a new layer. 
+In the [author's code][13], they add these weights to the layers using [`tf.nn module`][9] in Tensorflow which allows the user to set custom weights to a new layer. 
 
-Now, we are searching in the space of quantized neural networks, and to implement the quantization we use custom keras layers and there is no provision to set resusable weights to these layers. In the custom layer, the weights are defined using `self.add_weight` method which is defined locally in --- file the keras installation folder. 
+As we are searching in the space of quantized neural networks, and to implement the quantization we use custom keras layers and there is no provision to set resusable weights to these layers. In the custom layer, the weights are defined using `self.add_weight` method which is defined locally in ` ./environment/lib/python3.x/site-packages/keras/engine/base_layer.py ` file the keras installation folder. 
 
-Now, I tweaked this method slightly so that it allows to set custom weights to the layers. It is definitely not a good idea to tweak this in your global installation of Keras, and I strongly suggest using a virtual environment for this. 
+Now, I tweaked this method slightly so that it allows to set custom weights to the layers. It is definitely not a good idea to do such changes this in your global installation of Keras, and I strongly suggest using a virtual environment for this. 
 
-Please read this [blog][8] to know how the custom Keras layers are written, I have separate mini-project which contains code to build these quantized networks, and perhaps it will be a good idea to take a look there, before reading the code in this repository. 
+Please read this [blog][8] to know how the custom Keras layers are written, I have a [separate mini-project][15] which contains code to build these quantized networks, and perhaps it will be a good idea to take a look there before reading the code in this repository. 
 
+I have also written a small bash script [` setup.sh `][16] that you can run and it will create the virtual environment, installing dependencies, and would take care of replacing the `base_layer.py` file in your virtual environment's directory. 
 
+```bash 
 
+chmod +x setup.sh 
+./setup.sh 
+
+```
+
+Once you execute this you're ready to go! 
 
 Project Structure
 -----------------
@@ -87,7 +95,7 @@ Extract the three zip files stored in [``` data/mnist ```][6] in the same folder
 
 #### Architecture Search
 
-To run the architecture search, you can edit the experiment configurations in [```search_arc_cifar.py```][7], [```search_arc_mnist.py```][9] for CIFAR10 and MNIST respectively. 
+To run the architecture search, you can edit the experiment configurations in [```search_arc_cifar.py```][7] and [```search_arc_mnist.py```][9] for CIFAR10 and MNIST respectively. 
 
 Use the following command to run the experiment finally. 
 
@@ -184,8 +192,14 @@ If you find this code useful, please consider citing the original work by the au
 }
 ```
 
+Thanks to 
+---------
 
+This work wouldn't have been possible without the help from the following repos:
 
+1. https://github.com/melodyguan/enas (Author's code)
+2. https://github.com/DingKe/nn_playground/
+3. https://github.com/MINGUKKANG/ENAS-Tensorflow
 
 [1]:https://arxiv.org/abs/1802.03268
 [2]:https://arxiv.org/abs/1609.07061
@@ -199,13 +213,6 @@ If you find this code useful, please consider citing the original work by the au
 [10]:https://github.com/yashkant/ENAS-Quantized-Neural-Networks/blob/master/search_arc_mnist.py
 [11]:https://github.com/yashkant/ENAS-Quantized-Neural-Networks/blob/master/train_arc_cifar.py
 [12]:https://github.com/yashkant/ENAS-Quantized-Neural-Networks/blob/master/train_arc_mnist.py
-
-
-Thanks to 
----------
-
-This work wouldn't have been possible without the help from the following repos:
-
-1. https://github.com/melodyguan/enas (Author's code)
-2. https://github.com/DingKe/nn_playground/
-3. https://github.com/MINGUKKANG/ENAS-Tensorflow
+[13]:https://github.com/MINGUKKANG/ENAS-Tensorflow
+[14]:https://github.com/yashkant/ENAS-Quantized-Neural-Networks/blob/master/enas/common_ops.py
+[15]:https://github.com/yashkant/Quantized-Nets
