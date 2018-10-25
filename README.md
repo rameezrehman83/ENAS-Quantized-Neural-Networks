@@ -72,80 +72,32 @@ The skeletal overview of the project is as follows:
 │   ├── utils.py                             # Methods to build training operations graph
 │   └── micro_child.py                       # Builds the graph for child model from the architecture string
 |
-├── base_ops.py           # Stores generic operations              
-└── quantized_net.py      # Implementation of Quantized Neural Networks
-
-
-
-.
-├── binarized/
-│   ├── binary_layers.py  # Custom binary layers are defined in Keras 
-│   └── binary_ops.py     # Binarization and activation functions
-├── mnist/
-│   ├── download_mnist.py # Script for downloading MNIST
-│   └── mnist_data.py     # Functions for pre-processing MNIST
-├── pnas/
-│   ├── encoder.py        # Defines the RNN Encoder and State Space
-│   ├── manager.py        # Manages generation of child networks and training
-│   └── model.py          # Contain functions to generate child networks 
-├── train.py              # Defines the experiment settings
-.
-folders and files below will be generated after you run the experiment
-.
-├── logs/                 # Stores logs for the experiment 
-├── architectures/        # Stores the architectures evaluated and their corresponding rewards
-└── weights/              # Stores the weights of the best architecture trained 
+├── main_controller_child_trainer.py         # Defines experiment settings and runs architecture search        
+└── main_child_trainer.py                    # Trains given architecture till convergence  
 ```
 
 
 Defining Experiment Configuration 
 ---------------------------------
 
+#### Datasets
+
+Extract the three zip files stored in [``` data/mnist ```][6] in the same folder for the MNIST experiment, for the cifar10 experiment read the directions in file [```cifar10_dataset.txt```][3]. 
+
+
 #### Architecture Search
 
-To run the architecture search experiment you can edit the following sections of [```train.py```][7] file. 
- 
-
-```bash
-# -------Controller Training Settings-------
-B = 3   # Maximum number of block in the cell
-K_ = 128  # Number of children to be trained for each block size
-REGULARIZATION = 0  # Regularization strength on RNN controller
-CONTROLLER_CELLS = 100  # Number of cells in RNN controller
-RNN_TRAINING_EPOCHS = 15 # Number of training epochs during each run of the encoder training
-RESTORE_CONTROLLER = True  # Restore a pre-trained controller from earlier run 
-# ------------------------------------------
-
-
-# ------- Common Settings --------
-DROP_INPUT = 0.2  # Dropout parameter for the input layer
-DROP_HIDDEN = 0.5  # Dropout parameter for the hidden dense layers
-DROPOUT= (False, DROP_INPUT, DROP_HIDDEN) # Dropout only applied to the dense layers and the input
-MAX_EPOCHS = 20  # Maximum number of epochs to train each child network
-BATCHSIZE = 128  # Batchsize while training child networks
-NUM_CELLS = 3 # No. of cells to stack in each architecture
-NUM_CELL_FILTERS = [16, 24, 32] # No. of filters in each cell
-DENSE_LAYERS = [32, 10] # No. of neurons in the final dense layers
-USE_EXPANSION = False # If true uses expanded MNIST with data augmentation and rotation 
-operators = ['3x3 sep-bconv','5x5 sep-bconv', '1x7-7x1 bconv',
-              '3x3 bconv']  # Defines set of possible operations in the search space
-# --------------------------------
-
-```
-
-You can add the following operations inside the operators array above to grow the search space. 
-
-````bash 
-operators = ['3x3 sep-bconv','5x5 sep-bconv', '7x7 sep-bconv','3x3 bconv', '5x5 bconv',
-              '7x7 bconv', '1x7-7x1 bconv', '3x3 maxpool', '3x3 avgpool', 'linear' ]
-````
-These operations are defined in [```pnas/model.py```][6] file you can add your custom operations there. 
+To run the architecture search experiment, you can edit the configurations in [```search_arc_cifar.py```][7] or [```search_arc_mnist.py```][9] for CIFAR10 and MNIST respectively. 
 
 Use the following command to run the experiment finally. 
 
 ```bash 
-python train.py
+
+python search_arc_cifar.py >> cifar_search.txt
+python search_arc_mnist.py >> mnist_search.txt
+
 ```
+All the ouput will be redirected to ``` cifar_search.txt ``` file. 
 
 
 #### Analyzing Output 
@@ -212,13 +164,14 @@ If you find this code useful, please consider citing the original work by the au
 
 [1]:https://arxiv.org/abs/1802.03268
 [2]:https://arxiv.org/abs/1609.07061
-[3]:https://github.com/yashkant/PNAS-Binarized-Neural-Networks/blob/master/binarized/binary_ops.py
+[3]:https://github.com/yashkant/ENAS-Quantized-Neural-Networks/blob/master/data/cifar10_dataset.txt
 [4]:https://www.tensorflow.org/install/
 [5]:https://keras.io/#installation
-[6]:https://github.com/yashkant/PNAS-Binarized-Neural-Networks/blob/master/pnas/model.py
-[7]:https://github.com/yashkant/PNAS-Binarized-Neural-Networks/blob/master/train.py
+[6]:https://github.com/yashkant/ENAS-Quantized-Neural-Networks/tree/master/data/mnist
+[7]:https://github.com/yashkant/ENAS-Quantized-Neural-Networks/blob/master/search_arc_cifar.py
 [8]:https://keras.io/layers/writing-your-own-keras-layers/
 [9]:https://www.tensorflow.org/api_docs/python/tf/nn
+[10]:https://github.com/yashkant/ENAS-Quantized-Neural-Networks/blob/master/search_arc_mnist.py
 
 
 Thanks to 
