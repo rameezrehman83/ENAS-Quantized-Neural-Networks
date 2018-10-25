@@ -87,7 +87,7 @@ Extract the three zip files stored in [``` data/mnist ```][6] in the same folder
 
 #### Architecture Search
 
-To run the architecture search experiment, you can edit the configurations in [```search_arc_cifar.py```][7] or [```search_arc_mnist.py```][9] for CIFAR10 and MNIST respectively. 
+To run the architecture search, you can edit the experiment configurations in [```search_arc_cifar.py```][7], [```search_arc_mnist.py```][9] for CIFAR10 and MNIST respectively. 
 
 Use the following command to run the experiment finally. 
 
@@ -97,42 +97,66 @@ python search_arc_cifar.py >> cifar_search.txt
 python search_arc_mnist.py >> mnist_search.txt
 
 ```
-All the ouput will be redirected to ``` cifar_search.txt ``` file. 
+All the ouput will be redirected to ``` cifar_search.txt / mnist_search.txt``` file. 
 
 
 #### Analyzing Output 
 
-All the trained architectures are stored in ```architectures/{EXPERIMENT_NAME}.txt ``` file. The output for an architecture will be logged as follows: 
+In the output file, after training cycle for the controller we sample 10 architectures and valdation accuracy of these architectures. The output for the architectures will be logged as follows: 
 
 ```bash
-Sr. No: 1
-Reward: 0.4846  # Defines the reward/accuracy 
-Architecture: [0, '3x3 sep-bconv', 0, '3x3 sep-bconv']  # Architecture Specification 
-Representation String: "[[1. 0. 0.]] [[1. 0. 0. 0.]] [[1. 0. 0.]] [[1. 0. 0. 0.]]"  # This will be used for training architectures till convergence
+Epoch 181: Eval
+Eval at 77830
+valid_accuracy: 0.9612
+Eval at 77830
+Test Num examples:  10000
+test_accuracy: 0.9622
+epoch = 181   ch_step = 77850  loss = 0.127491   lr = 0.0456   |g| = 0.2030   tr_acc = 108/128   mins = 549.07    
+..   
+Epoch 182: Training controller
+ctrl_step = 5430   loss = 0.266   ent = 49.17   lr = 0.0035   |g| = 0.0002   acc = 0.9688   bl = 0.97   mins = 550.96
+..
+Here are 10 architectures
+[0 2 1 4 1 3 0 1 1 0 1 0 1 2 0 4 0 0 0 1]     # Denotes the architecture for normal cell 
+[1 3 1 4 0 1 1 1 1 2 1 4 3 2 0 2 1 1 0 3]     # Denotes the architecture for reduction cell 
+val_acc = 0.9688
+---------------------------------------------------
+..
+[0 0 0 1 1 0 1 3 1 1 0 3 1 1 1 0 0 4 0 0]
+[1 0 1 4 1 1 1 0 1 2 0 4 0 1 4 0 0 0 0 2]
+val_acc = 0.9531
+---------------------------------------------------
+
 ```
-The architecture with highest reward needs to be trained till convergence, follow the steps below for it. 
+The architecture with highest validation accuracy needs to be trained till convergence. The two lists printed above denote the architecture of the cell. 
 
 
 #### Training Architecture  
 
-To train an architecture till convergence edit the following section of [```train.py```][7] file. Pick the required architecture's representation string (see above) from the output and replace the corresponding field below with it. 
+To train an architecture till convergence pass the pass the architecture string as a parameter to  [```train_arc_mnist.py```][11] or [```train_arc_cifar.py```][12] file.
+
+To the architecture string is just concatenation of the normal cell and reduction cell, see below:
 
 ```bash
 
-# -------Architecture Training Settings-----
-NUM_EPOCHS = 200  # Define the number of epochs.
-REPRESENTATION_STRING = "[[1. 0. 0.]] [[1. 0. 0. 0.]] [[1. 0. 0.]] [[1. 0. 0. 0.]]"  # Replace this string with the architecture representation string required
-LOAD_SAVED = False # Set this to true to continue training a saved architecture 
-# ------------------------------------------
+Given Architecture: 
+
+[0 2 1 4 1 3 0 1 1 0 1 0 1 2 0 4 0 0 0 1]     # Denotes the architecture for normal cell 
+[1 3 1 4 0 1 1 1 1 2 1 4 3 2 0 2 1 1 0 3]     # Denotes the architecture for reduction cell 
+
+The architecture string becomes: "0 2 1 4 1 3 0 1 1 0 1 0 1 2 0 4 0 0 0 1 1 3 1 4 0 1 1 1 1 2 1 4 3 2 0 2 1 1 0 3"
 
 ```
-After replacing the ```REPRESENTATION_STRING``` run the following command:
+
+Now, to train the architecture in above example you can use the commands below: 
 
 ```bash
 
-python train.py -ta True
-
+python train_arc_mnist.py -fixed_arc "0 2 1 4 1 3 0 1 1 0 1 0 1 2 0 4 0 0 0 1 1 3 1 4 0 1 1 1 1 2 1 4 3 2 0 2 1 1 0 3" >> mnist_arc.txt
+python train_arc_cifar.py -fixed_arc "0 2 1 4 1 3 0 1 1 0 1 0 1 2 0 4 0 0 0 1 1 3 1 4 0 1 1 1 1 2 1 4 3 2 0 2 1 1 0 3" >> cifar_arc.txt
 ```
+All the ouput will be redirected to ``` mnist_arc.txt / cifar_arc.txt``` file. 
+
 
 
 References
@@ -141,21 +165,22 @@ References
 If you find this code useful, please consider citing the original work by the authors:
 
 ```
-@article{liu2017progressive,
-  title={Progressive neural architecture search},
-  author={Liu, Chenxi and Zoph, Barret and Shlens, Jonathon and Hua, Wei and Li, Li-Jia and Fei-Fei, Li and Yuille, Alan and Huang, Jonathan and Murphy, Kevin},
-  journal={arXiv preprint arXiv:1712.00559},
-  year={2017}
+@article{pham2018efficient,
+  title={Efficient Neural Architecture Search via Parameter Sharing},
+  author={Pham, Hieu and Guan, Melody Y and Zoph, Barret and Le, Quoc V and Dean, Jeff},
+  journal={arXiv preprint arXiv:1802.03268},
+  year={2018}
 }
 ```
 
 ```
-@inproceedings{hubara2016binarized,
-  title={Binarized neural networks},
-  author={Hubara, Itay and Courbariaux, Matthieu and Soudry, Daniel and El-Yaniv, Ran and Bengio, Yoshua},
-  booktitle={Advances in neural information processing systems},
-  pages={4107--4115},
-  year={2016}
+@article{Hubara2017QuantizedNN,
+  title={Quantized Neural Networks: Training Neural Networks with Low Precision Weights and Activations},
+  author={Itay Hubara and Matthieu Courbariaux and Daniel Soudry and Ran El-Yaniv and Yoshua Bengio},
+  journal={Journal of Machine Learning Research},
+  year={2017},
+  volume={18},
+  pages={187:1-187:30}
 }
 ```
 
@@ -172,6 +197,8 @@ If you find this code useful, please consider citing the original work by the au
 [8]:https://keras.io/layers/writing-your-own-keras-layers/
 [9]:https://www.tensorflow.org/api_docs/python/tf/nn
 [10]:https://github.com/yashkant/ENAS-Quantized-Neural-Networks/blob/master/search_arc_mnist.py
+[11]:https://github.com/yashkant/ENAS-Quantized-Neural-Networks/blob/master/train_arc_cifar.py
+[12]:https://github.com/yashkant/ENAS-Quantized-Neural-Networks/blob/master/train_arc_mnist.py
 
 
 Thanks to 
@@ -179,5 +206,6 @@ Thanks to
 
 This work wouldn't have been possible without the help from the following repos:
 
-1. https://github.com/titu1994/progressive-neural-architecture-search
+1. https://github.com/melodyguan/enas (Author's code)
 2. https://github.com/DingKe/nn_playground/
+3. https://github.com/MINGUKKANG/ENAS-Tensorflow
