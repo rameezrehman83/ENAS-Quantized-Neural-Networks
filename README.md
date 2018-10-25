@@ -216,3 +216,4 @@ This work wouldn't have been possible without the help from the following repos:
 [13]:https://github.com/MINGUKKANG/ENAS-Tensorflow
 [14]:https://github.com/yashkant/ENAS-Quantized-Neural-Networks/blob/master/enas/common_ops.py
 [15]:https://github.com/yashkant/Quantized-Nets
+[16]:https://github.com/yashkant/ENAS-Quantized-Neural-Networks/blob/master/enas/setup.sh
