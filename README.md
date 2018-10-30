@@ -79,7 +79,7 @@ The skeletal overview of the project is as follows:
 ```
 
 
-Defining Experiment Configuration 
+Experiment Details
 ---------------------------------
 
 #### Datasets
