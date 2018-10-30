@@ -14,10 +14,27 @@ The controller is trained with policy gradient to select a subgraph that maximiz
 
 During the forward pass, Quantized Neural Networks drastically reduce memory size and accesses, and replace most arithmetic operations with bit-wise operations. As a result, power consumption is expected to be drastically reduced.
 
+In this project the child model is built using binary, ternary or quantized convolutional layers defined in [`micro_child.py`][17]. 
+
 
 
 Project Setup 
 -----
+
+#### Setup Script
+
+To run this project you will have to create a new virtualenv with Python3 and install the needed dependencies there. I have written a small bash script [` setup.sh `][16] that you can run and it will create the virtual environment, install the needed dependencies, and would take care of replacing the `base_layer.py` file in your virtual environment's directory. 
+
+```bash 
+
+chmod +x setup.sh 
+./setup.sh 
+
+```
+Once you execute this you're ready to go! 
+
+#### Why a new environment?
+
 The weight sharing mechanism works by intializing the weights of the DAG only once and reusing them over various iterations, the methods used for this are `create_weight` and `create_bias` defined in [`common_ops.py`][14]. 
 
 In the [author's code][13], they add these weights to the layers using [`tf.nn module`][9] in Tensorflow which allows the user to set custom weights to a new layer. 
@@ -28,16 +45,8 @@ Now, I tweaked this method slightly so that it allows to set custom weights to t
 
 Please read this [blog][8] to know how the custom Keras layers are written, I have a [separate mini-project][15] which contains code to build these quantized networks, and perhaps it will be a good idea to take a look there before reading the code in this repository. 
 
-I have also written a small bash script [` setup.sh `][16] that you can run and it will create the virtual environment, installing dependencies, and would take care of replacing the `base_layer.py` file in your virtual environment's directory. 
 
-```bash 
 
-chmod +x setup.sh 
-./setup.sh 
-
-```
-
-Once you execute this you're ready to go! 
 
 Project Structure
 -----------------
@@ -214,3 +223,4 @@ This work wouldn't have been possible without the help from the following repos:
 [14]:https://github.com/yashkant/ENAS-Quantized-Neural-Networks/blob/master/enas/common_ops.py
 [15]:https://github.com/yashkant/Quantized-Nets
 [16]:https://github.com/yashkant/ENAS-Quantized-Neural-Networks/blob/master/enas/setup.sh
+[17]:https://github.com/yashkant/ENAS-Quantized-Neural-Networks/blob/master/enas/micro_child.py
