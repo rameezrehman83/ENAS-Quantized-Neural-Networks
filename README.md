@@ -12,13 +12,8 @@ In ENAS, a controller discovers neural network architectures by searching for an
 
 The controller is trained with policy gradient to select a subgraph that maximizes the expected reward on a validation set. Meanwhile, the model corresponding to the selected subgraph is trained to minimize a canonical cross entropy loss. Sharing parameters among child models allows ENAS to deliver strong empirical performances,
 
-
-<p align="center">
-  <img src="https://imgur.com/PO53CTS.png">
-</p>
-
-
 During the forward pass, Quantized Neural Networks drastically reduce memory size and accesses, and replace most arithmetic operations with bit-wise operations. As a result, power consumption is expected to be drastically reduced.
+
 
 
 Project Setup 
@@ -126,6 +121,12 @@ val_acc = 0.9531
 ---------------------------------------------------
 
 ```
+
+<p align="center">
+  <img src="https://imgur.com/PO53CTS.png">
+</p>
+
+
 The architecture with highest validation accuracy needs to be trained till convergence. The two lists printed above denote the architecture of the cell. 
 
 
