@@ -101,7 +101,7 @@ In the output file, after each training cycle for the controller we sample 10 ar
   <img src="https://imgur.com/PO53CTS.png">
 </p>
 
-Image Source: [Efficient Neural Architecture Search via Parameter Sharing][3]
+Image Source: [Efficient Neural Architecture Search via Parameter Sharing][1]
 
 
 The output for the architectures will be logged as follows: 
