@@ -95,7 +95,16 @@ All the ouput will be redirected to ``` cifar_search.txt / mnist_search.txt``` f
 
 #### Analyzing Output 
 
-In the output file, after training cycle for the controller we sample 10 architectures and valdation accuracy of these architectures. The output for the architectures will be logged as follows: 
+In the output file, after each training cycle for the controller we sample 10 architectures and output valdation accuracy of these architectures. 
+
+<p align="center">
+  <img src="https://imgur.com/PO53CTS.png">
+</p>
+
+Image Source: [Efficient Neural Architecture Search via Parameter Sharing][3]
+
+
+The output for the architectures will be logged as follows: 
 
 ```bash
 Epoch 181: Eval
@@ -122,9 +131,6 @@ val_acc = 0.9531
 
 ```
 
-<p align="center">
-  <img src="https://imgur.com/PO53CTS.png">
-</p>
 
 
 The architecture with highest validation accuracy needs to be trained till convergence. The two lists printed above denote the architecture of the cell. 
