@@ -22,11 +22,6 @@ from ternarize.ternary_ops import ternarize as ternarize_op
 from functools import partial
 
 
-# def ternary_tanh(x):
-#     x = K.clip(x, -1, 1)
-#     return ternarize_op(x)
-
-
 H = 1.
 kernel_lr_multiplier = 'Glorot'
 use_bias = False
@@ -37,91 +32,85 @@ print("-"*80)
 print("Nbits: ", n_bits)
 print("-"*80)
 
-# def bin_conv2d(x, w_getter, conv_kernel_size, conv_num_filters, conv_strides=1, use_activation = False, padding = 'same'):
-#     x = tf.Print(x, [x], "-----Conv2d Input-----", first_n = 3, summarize = 20)
-#     x = BinaryConv2D(conv_num_filters, kernel_size=(conv_kernel_size,conv_kernel_size), 
-#                            data_format='channels_last', strides=(conv_strides,conv_strides),
-#                            H=H, kernel_lr_multiplier=kernel_lr_multiplier, 
-#                            padding=padding, use_bias=use_bias, binarize = binarize, w_getter = w_getter)(x)
-#     x = tf.Print(x, [x], "-----Conv2d output-----", first_n = 3, summarize = 20)
 
-#     if(use_activation):
-#         return Activation(binary_tanh_op)(x)
-#     else: 
-#         return x
 
-# def bin_activation(x):
-#     return Activation(binary_tanh_op)(x)
 
-# def bin_dep_conv2d(x, w_getter, conv_kernel_size, conv_num_filters, conv_strides=1, use_activation = False, padding = 'same'):
-#     x = tf.Print(x, [x], "-----Dep-Conv2d Input-----", first_n = 3, summarize = 20)
-#     x = DepthwiseBinaryConv2D(conv_num_filters, kernel_size=(conv_kernel_size,conv_kernel_size), 
-#                            data_format='channels_last', strides=(conv_strides,conv_strides),
-#                            H=H, kernel_lr_multiplier=kernel_lr_multiplier, 
-#                            padding=padding, use_bias=use_bias, w_getter = w_getter)(x)
-#     x = tf.Print(x, [x], "-----Dep-Conv2d output-----", first_n = 3, summarize = 20)
+def bin_conv2d(x, w_getter, conv_kernel_size, conv_num_filters, conv_strides=1, use_activation = False, padding = 'same'):
+    x = BinaryConv2D(conv_num_filters, kernel_size=(conv_kernel_size,conv_kernel_size), 
+                           data_format='channels_last', strides=(conv_strides,conv_strides),
+                           H=H, kernel_lr_multiplier=kernel_lr_multiplier, 
+                           padding=padding, use_bias=use_bias, binarize = binarize, w_getter = w_getter)(x)
 
-#     if(use_activation):
-#         return Activation(binary_tanh_op)(x)
-#     else: 
-#         return x
+    if(use_activation):
+        return Activation(binary_tanh_op)(x)
+    else: 
+        return x
 
-# def bin_dense(x, units, w_getter, use_activation = False):
-#     x = tf.Print(x, [x], "-----Dense Input-----", first_n = 3, summarize = 20)
-#     x = BinaryDense(units, H=H, kernel_lr_multiplier=kernel_lr_multiplier, use_bias=use_bias, w_getter = w_getter)(x)
-#     x = tf.Print(x, [x], "-----Dense output-----", first_n = 3, summarize = 20)
+def bin_activation(x):
+    return Activation(binary_tanh_op)(x)
+
+def bin_dep_conv2d(x, w_getter, conv_kernel_size, conv_num_filters, conv_strides=1, use_activation = False, padding = 'same'):
+    x = DepthwiseBinaryConv2D(conv_num_filters, kernel_size=(conv_kernel_size,conv_kernel_size), 
+                           data_format='channels_last', strides=(conv_strides,conv_strides),
+                           H=H, kernel_lr_multiplier=kernel_lr_multiplier, 
+                           padding=padding, use_bias=use_bias, w_getter = w_getter)(x)
+
+    if(use_activation):
+        return Activation(binary_tanh_op)(x)
+    else: 
+        return x
+
+def bin_dense(x, units, w_getter, use_activation = False):
+    x = BinaryDense(units, H=H, kernel_lr_multiplier=kernel_lr_multiplier, use_bias=use_bias, w_getter = w_getter)(x)
     
-#     if(use_activation):
-#         return Activation(binary_tanh_op)(x)
-#     else: 
-#         return x
+    if(use_activation):
+        return Activation(binary_tanh_op)(x)
+    else: 
+        return x
+
+
+def ternary_tanh(x):
+    x = K.clip(x, -1, 1)
+    return ternarize_op(x)
 
 def ter_conv2d(x, w_getter, conv_kernel_size, conv_num_filters, conv_strides=1, use_activation = False, padding = 'same'):
-    # x = tf.Print(x, [x], "-----Conv2d Input-----", first_n = 3, summarize = 20)
     x = TernaryConv2D(conv_num_filters, kernel_size=(conv_kernel_size,conv_kernel_size), 
                            data_format='channels_last', strides=(conv_strides,conv_strides),
                            H=H, kernel_lr_multiplier=kernel_lr_multiplier, 
                            padding=padding, use_bias=use_bias, w_getter = w_getter)(x)
-    # x = tf.Print(x, [x], "-----Conv2d output-----", first_n = 3, summarize = 20)
 
     if(use_activation):
-        return Activation(binary_tanh_op)(x)
+        return Activation(ternary_tanh)(x)
     else: 
         return x
 
 def ter_activation(x):
-    return Activation(binary_tanh_op)(x)
+    return Activation(ternary_tanh)(x)
 
 def ter_dep_conv2d(x, w_getter, conv_kernel_size, conv_num_filters, conv_strides=1, use_activation = False, padding = 'same'):
-    # x = tf.Print(x, [x], "-----Dep-Conv2d Input-----", first_n = 3, summarize = 20)
     x = DepthwiseTernaryConv2D(conv_num_filters, kernel_size=(conv_kernel_size,conv_kernel_size), 
                            data_format='channels_last', strides=(conv_strides,conv_strides),
                            H=H, kernel_lr_multiplier=kernel_lr_multiplier, 
                            padding=padding, use_bias=use_bias, w_getter = w_getter)(x)
-    # x = tf.Print(x, [x], "-----Dep-Conv2d output-----", first_n = 3, summarize = 20)
 
     if(use_activation):
-        return Activation(binary_tanh_op)(x)
+        return Activation(ternary_tanh)(x)
     else: 
         return x
 
 def ter_dense(x, units, w_getter, use_activation = False):
-    # x = tf.Print(x, [x], "-----Dense Input-----", first_n = 3, summarize = 20)
     x = TernaryDense(units, H=H, kernel_lr_multiplier=kernel_lr_multiplier, use_bias=use_bias, w_getter = w_getter)(x)
-    # x = tf.Print(x, [x], "-----Dense output-----", first_n = 3, summarize = 20)
     
     if(use_activation):
-        return Activation(binary_tanh_op)(x)
+        return Activation(ternary_tanh)(x)
     else: 
         return x
 
 def quant_conv2d(x, w_getter, conv_kernel_size, conv_num_filters, nb = n_bits, conv_strides=1, use_activation = False, padding = 'same'):
-    # x = tf.Print(x, [x], "-----Conv2d Input-----", first_n = 3, summarize = 20)
     x = QuantizedConv2D(conv_num_filters, kernel_size=(conv_kernel_size,conv_kernel_size), 
                            data_format='channels_last', strides=(conv_strides,conv_strides),
                            H=H, kernel_lr_multiplier=kernel_lr_multiplier, 
                            padding=padding, use_bias=use_bias, w_getter = w_getter, nb = nb)(x)
-    # x = tf.Print(x, [x], "-----Conv2d output-----", first_n = 3, summarize = 20)
 
     if(use_activation):
         return Activation(partial(quantized_tanh_op, nb = nb))(x)
@@ -132,12 +121,10 @@ def quant_activation(x):
     return Activation(partial(quantized_tanh_op, nb = n_bits))(x)
 
 def quant_dep_conv2d(x, w_getter, conv_kernel_size, conv_num_filters, nb = n_bits, conv_strides=1, use_activation = False, padding = 'same'):
-    # x = tf.Print(x, [x], "-----Dep-Conv2d Input-----", first_n = 3, summarize = 20)
     x = DepthwiseQuantizedConv2D(conv_num_filters, kernel_size=(conv_kernel_size,conv_kernel_size), 
                            data_format='channels_last', strides=(conv_strides,conv_strides),
                            H=H, kernel_lr_multiplier=kernel_lr_multiplier, 
                            padding=padding, use_bias=use_bias, w_getter = w_getter, nb = nb)(x)
-    # x = tf.Print(x, [x], "-----Dep-Conv2d output-----", first_n = 3, summarize = 20)
 
     if(use_activation):
         return Activation(partial(quantized_tanh_op, nb = nb))(x)
@@ -145,10 +132,7 @@ def quant_dep_conv2d(x, w_getter, conv_kernel_size, conv_num_filters, nb = n_bit
         return x
 
 def quant_dense(x, units, w_getter, nb = n_bits, use_activation = False):
-    # x = tf.Print(x, [x], "-----Dense Input-----", first_n = 3, summarize = 20)
     x = QuantizedDense(units, H=H, kernel_lr_multiplier=kernel_lr_multiplier, use_bias=use_bias, w_getter = w_getter, nb = nb)(x)
-    # x = tf.Print(x, [x], "-----Dense output-----", first_n = 3, summarize = 20)
-    
     if(use_activation):
         return Activation(partial(quantized_tanh_op, nb = nb))(x)
     else: 
@@ -263,8 +247,6 @@ class MicroChild(Model):
                 w = create_weight("w", [1, 1, inp_c, out_filters])
                 if(type_op == "quantize"):
                     x = quant_conv2d(x, w, 1, out_filters)
-                    # x = tf.nn.conv2d(x, w, [1, 1, 1, 1], "SAME",
-                    #                  data_format=self.data_format)
                 else:
                     x = ter_conv2d(x, w, 1, out_filters)
 
@@ -284,9 +266,6 @@ class MicroChild(Model):
                 path1 = quant_conv2d(path1, w, 1, out_filters//2, padding = 'valid')
             else:
                 path1 = ter_conv2d(path1, w, 1, out_filters//2, padding = 'valid')
-
-            # path1 = tf.nn.conv2d(path1, w, [1, 1, 1, 1], "VALID",
-            #                      data_format=self.data_format)
 
         # Skip path 2
         # First pad with 0"s on the right and bottom, then shift the filter to
@@ -309,10 +288,6 @@ class MicroChild(Model):
                 path2 = quant_conv2d(path2, w, 1, out_filters//2, padding = 'valid')
             else:
                 path2 = ter_conv2d(path2, w, 1, out_filters//2, padding = 'valid')
-            # path2 = bin_conv2d(path2, w, 1, out_filters//2, padding = 'valid')
-
-            # path2 = tf.nn.conv2d(path2, w, [1, 1, 1, 1], "VALID",
-            #                      data_format=self.data_format)
 
         # Concat and apply BN
         final_path = tf.concat(values=[path1, path2], axis=concat_axis)
@@ -375,9 +350,8 @@ class MicroChild(Model):
         with tf.variable_scope("calibrate"):
             x = layers[0]  
             if hw[0] != hw[1]:  
-                # assert hw[0] == 2 * hw[1]  
+                assert hw[0] == 2 * hw[1]  
                 with tf.variable_scope("pool_x"):
-                    # x = tf.nn.relu(x)
                     if(type_op == "quantize"):
                         x = quant_activation(x)
                         x = self._factorized_reduction(x, out_filters, 2, is_training, type_op = type_op)
@@ -389,18 +363,12 @@ class MicroChild(Model):
             elif c[0] != out_filters:  
                 with tf.variable_scope("pool_x"):
                     w = create_weight("w", [1, 1, c[0], out_filters])
-                    # x = tf.nn.relu(x)
                     if(type_op == "quantize"):
                         x = quant_activation(x)
                         x = quant_conv2d(x, w, 1, out_filters)
                     else:
                         x = ter_activation(x)
                         x = ter_conv2d(x, w, 1, out_filters)
-
-                    # x = bin_activation(x)
-                    # x = bin_conv2d(x, w, 1, out_filters)
-                    # x = tf.nn.conv2d(x, w, [1, 1, 1, 1], "SAME",
-                    #                  data_format=self.data_format)
                     x = batch_norm(x, is_training, data_format=self.data_format)  
 
             y = layers[1]  
@@ -415,11 +383,6 @@ class MicroChild(Model):
                         y = ter_activation(y)
                         y = ter_conv2d(y, w, 1, out_filters)
 
-                    # y = bin_activation(y)
-                    # y = bin_conv2d(y, w, 1, out_filters)
-
-                    # y = tf.nn.conv2d(y, w, [1, 1, 1, 1], "SAME",
-                    #                  data_format=self.data_format)
                     y = batch_norm(y, is_training, data_format=self.data_format)
         return [x, y]
 
@@ -432,8 +395,6 @@ class MicroChild(Model):
             with tf.variable_scope("stem_conv"):
                 w = create_weight("w", [3, 3, self.channel, self.out_filters * 3])  
                 x = quant_conv2d(images, w, 3, self.out_filters*3)
-                # x = tf.nn.conv2d(
-                #     images, w, [1, 1, 1, 1], "SAME", data_format=self.data_format)
                 x = batch_norm(x, is_training, data_format=self.data_format)
             if self.data_format == "NHWC":
                 split_axis = 3
@@ -521,11 +482,8 @@ class MicroChild(Model):
                             inp_c = self._get_C(aux_logits)
                             w = create_weight("w", [1, 1, inp_c, 128])
                             aux_logits = ter_conv2d(aux_logits, w, 1, 128)
-                            # aux_logits = tf.nn.conv2d(aux_logits, w, [1, 1, 1, 1], "SAME",
-                            #                           data_format=self.data_format)
                             aux_logits = batch_norm(aux_logits, is_training=True,
                                                     data_format=self.data_format)
-                            # aux_logits = tf.nn.relu(aux_logits)
                             aux_logits = ter_activation(aux_logits)
 
                         with tf.variable_scope("avg_pool"):
@@ -534,11 +492,8 @@ class MicroChild(Model):
                             w = create_weight("w", [hw, hw, inp_c, 768])
                             aux_logits = ter_conv2d(aux_logits, w, hw, 768)
 
-                            # aux_logits = tf.nn.conv2d(aux_logits, w, [1, 1, 1, 1], "SAME",
-                            #                           data_format=self.data_format)
                             aux_logits = batch_norm(aux_logits, is_training=True,
                                                     data_format=self.data_format)
-                            # aux_logits = tf.nn.relu(aux_logits)
                             aux_logits = ter_activation(aux_logits)
 
                         with tf.variable_scope("fc"):
@@ -586,7 +541,6 @@ class MicroChild(Model):
             with tf.variable_scope("sep_conv_{}".format(conv_id)):
                 w_depthwise = create_weight("w_depth", [f_size, f_size, inp_c, 1])
                 w_pointwise = create_weight("w_point", [1, 1, inp_c, out_filters])
-                # x = tf.nn.relu(x)
                 print("f_size: ", f_size)
                 if(type_op == "quantize"):
                     x = quant_activation(x)
@@ -595,11 +549,6 @@ class MicroChild(Model):
                     x = ter_activation(x)
                     x = ter_dep_conv2d(x, [w_depthwise, w_pointwise], f_size, out_filters, conv_strides = stride)
 
-                # x = tf.nn.separable_conv2d(
-                #     x,
-                #     depthwise_filter=w_depthwise,
-                #     pointwise_filter=w_pointwise,
-                #     strides=strides, padding="SAME", data_format=self.data_format)
                 x = batch_norm(x, is_training, data_format=self.data_format)
 
         return x
@@ -696,15 +645,12 @@ class MicroChild(Model):
                                 data_format=self.actual_data_format)
                         if inp_c != out_filters:
                             w = create_weight("w", [1, 1, inp_c, out_filters])
-                            # x = tf.nn.relu(x)
                             if(type_op == "quantize"):
                                 x = quant_activation(x)
                                 x = quant_conv2d(x,w, 1, out_filters)
                             else:
                                 x = ter_activation(x)
                                 x = ter_conv2d(x,w, 1, out_filters)
-                            # x = tf.nn.conv2d(x, w, [1, 1, 1, 1], "SAME",
-                            #                  data_format=self.data_format)
                             x = batch_norm(x, is_training, data_format=self.data_format)
                     else:
                         inp_c = self._get_C(x)
@@ -713,15 +659,12 @@ class MicroChild(Model):
                             x = self._factorized_reduction(x, out_filters, 2, is_training, type_op = type_op)
                         if inp_c != out_filters:
                             w = create_weight("w", [1, 1, inp_c, out_filters])
-                            # x = tf.nn.relu(x)
                             if(type_op == "quantize"):
                                 x = quant_activation(x)
                                 x = quant_conv2d(x,w, 1, out_filters)
                             else:
                                 x = ter_activation(x)
                                 x = ter_conv2d(x,w, 1, out_filters)
-                            # x = tf.nn.conv2d(x, w, [1, 1, 1, 1], "SAME",
-                            #  data_format=self.data_format)
                             x = batch_norm(x, is_training, data_format=self.data_format)
                     if (x_op in [0, 1, 2, 3] and
                             self.drop_path_keep_prob is not None and
@@ -751,15 +694,12 @@ class MicroChild(Model):
                                 data_format=self.actual_data_format)
                         if inp_c != out_filters:
                             w = create_weight("w", [1, 1, inp_c, out_filters])
-                            # y = tf.nn.relu(y)
                             if(type_op == "quantize"):
                                 x = quant_activation(x)
                                 x = quant_conv2d(x,w, 1, out_filters)
                             else:
                                 x = ter_activation(x)
                                 x = ter_conv2d(x,w, 1, out_filters)
-                            # y = tf.nn.conv2d(y, w, [1, 1, 1, 1], "SAME",
-                            #                  data_format=self.data_format)
                             y = batch_norm(y, is_training, data_format=self.data_format)
                     else:
                         inp_c = self._get_C(y)
@@ -768,15 +708,12 @@ class MicroChild(Model):
                             y = self._factorized_reduction(y, out_filters, 2, is_training)
                         if inp_c != out_filters:
                             w = create_weight("w", [1, 1, inp_c, out_filters])
-                            # y = tf.nn.relu(y)
                             if(type_op == "quantize"):
                                 x = quant_activation(x)
                                 x = quant_conv2d(x,w, 1, out_filters)
                             else:
                                 x = ter_activation(x)
                                 x = ter_conv2d(x,w, 1, out_filters)
-                            # y = tf.nn.conv2d(y, w, [1, 1, 1, 1], "SAME",
-                            #                  data_format=self.data_format)
                             y = batch_norm(y, is_training, data_format=self.data_format)
 
                     if (y_op in [0, 1, 2, 3] and
@@ -807,7 +744,6 @@ class MicroChild(Model):
                         "w", [num_possible_inputs, avg_pool_c * out_filters])
                     w = w[prev_cell]
                     w = tf.reshape(w, [1, 1, avg_pool_c, out_filters])
-                    # avg_pool = tf.nn.relu(avg_pool)
 
                     if(type_op == "quantize"):
                         avg_pool = quant_activation(avg_pool)
@@ -815,8 +751,6 @@ class MicroChild(Model):
                     else:
                         avg_pool = ter_activation(avg_pool)
                         avg_pool = ter_conv2d(avg_pool, w, 1, out_filters)
-                    # avg_pool = tf.nn.conv2d(avg_pool, w, strides=[1, 1, 1, 1],
-                    #                         padding="SAME", data_format=self.data_format)
                     avg_pool = batch_norm(avg_pool, is_training=True,
                                           data_format=self.data_format)
 
@@ -830,15 +764,12 @@ class MicroChild(Model):
                         "w", [num_possible_inputs, max_pool_c * out_filters])
                     w = w[prev_cell]
                     w = tf.reshape(w, [1, 1, max_pool_c, out_filters])
-                    # max_pool = tf.nn.relu(max_pool)
                     if(type_op == "quantize"):
                         max_pool = quant_activation(max_pool)
                         max_pool = quant_conv2d(max_pool, w, 1, out_filters)
                     else:
                         max_pool = ter_activation(max_pool)
                         max_pool = ter_conv2d(max_pool, w, 1, out_filters)
-                    # max_pool = tf.nn.conv2d(max_pool, w, strides=[1, 1, 1, 1],
-                    #                         padding="SAME", data_format=self.data_format)
                     max_pool = batch_norm(max_pool, is_training=True,
                                           data_format=self.data_format)
 
@@ -848,15 +779,13 @@ class MicroChild(Model):
                 w = create_weight("w", [num_possible_inputs, x_c * out_filters])
                 w = w[prev_cell]
                 w = tf.reshape(w, [1, 1, x_c, out_filters])
-                # x = tf.nn.relu(x)
                 if(type_op == "quantize"):
                     x = quant_activation(x)
                     x = quant_conv2d(x, w, 1, out_filters)
                 else:
                     x = ter_activation(x)
                     x = ter_conv2d(x, w, 1, out_filters)
-                # x = tf.nn.conv2d(x, w, strides=[1, 1, 1, 1], padding="SAME",
-                #                  data_format=self.data_format)
+
                 x = batch_norm(x, is_training=True, data_format=self.data_format)
 
         out = [
@@ -905,8 +834,6 @@ class MicroChild(Model):
                         offset = offset[prev_cell]
                         scale = scale[prev_cell]
 
-                    # the computations
-                    # x = tf.nn.relu(x)
                     if(type_op == "quantize"):
                         x = quant_activation(x)
                         x = quant_dep_conv2d(x, [w_depthwise, w_pointwise], filter_size, out_filters)
@@ -914,13 +841,7 @@ class MicroChild(Model):
                         x = ter_activation(x)
                         x = ter_dep_conv2d(x, [w_depthwise, w_pointwise], filter_size, out_filters)
 
-                    # x = tf.nn.separable_conv2d(
-                    #     x,
-                    #     depthwise_filter=w_depthwise,
-                    #     pointwise_filter=w_pointwise,
-                    #     strides=[1, 1, 1, 1], padding="SAME",
-                    #     data_format=self.data_format)
-
+ 
                     x, _, _ = tf.nn.fused_batch_norm(
                         x, scale, offset, epsilon=1e-5, data_format=self.data_format,
                         is_training=True)
@@ -1002,15 +923,12 @@ class MicroChild(Model):
             w = create_weight("w", [self.num_cells + 2, out_filters * out_filters])
             w = tf.gather(w, indices, axis=0)
             w = tf.reshape(w, [1, 1, num_outs * out_filters, out_filters])
-            # out = tf.nn.relu(out)
             if(type_op == "quantize"):
                 out = quant_activation(out)
                 out = quant_conv2d(out, w, 1, out_filters)
             else:
                 out = ter_activation(out)
                 out = ter_conv2d(out, w, 1, out_filters)
-            # out = tf.nn.conv2d(out, w, strides=[1, 1, 1, 1], padding="SAME",
-            #                    data_format=self.data_format)
             out = batch_norm(out, is_training=True, data_format=self.data_format)
 
         out = tf.reshape(out, tf.shape(prev_layers[0]))

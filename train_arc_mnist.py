@@ -24,7 +24,7 @@ FLAGS = flags.FLAGS
 
 
 # ----- Experiment Settings -----
-DEFINE_string("output_dir", "./output" , "Output folder to save model checkpints.")
+DEFINE_string("output_dir", "./output-mnist-arc" , "Output folder to save model checkpints.")
 DEFINE_string("train_data_dir", "./data/mnist/train", "Path to the train data dir")
 DEFINE_string("val_data_dir", "./data/mnist/valid", "Path to the validation data dir")
 DEFINE_string("test_data_dir", "./data/mnist/test", "Path to the test data dir")

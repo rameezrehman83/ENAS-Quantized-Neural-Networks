@@ -23,26 +23,22 @@ from enas.micro_child import MicroChild
 flags = tf.app.flags
 FLAGS = flags.FLAGS
 
-################## YOU Should write under parameter ######################
-DEFINE_string("output_dir", "./arc-cifar" , "")
-# DEFINE_string("train_data_dir", "./data./train", "")
-# DEFINE_string("val_data_dir", "./data./valid", "")
-# DEFINE_string("test_data_dir", "./data./test", "")
+# ----- Experiment Settings -----
+DEFINE_string("output_dir", "./output-cifar-arc" , "")
 DEFINE_string("data_path", "./data/cifar10", "")
 DEFINE_integer("channel",3, "MNIST: 1, Cifar10: 3")
 DEFINE_integer("img_size", 32, "enlarge image size")
 DEFINE_integer("n_aug_img",3 , "if 2: num_img: 55000 -> aug_img: 110000, elif 1: False")
 DEFINE_float("child_lr_min", 0.0001, "for lr schedule")
 DEFINE_string("child_fixed_arc", "1 2 1 3 0 1 0 4 1 1 1 1 0 1 0 1 1 0 0 1 0 1 0 4 1 0 2 0 0 3 1 1 0 0 0 0 4 1 1 0", "")
-##########################################################################
-
 DEFINE_boolean("reset_output_dir", True, "Delete output_dir if exists.")
+# ------------------------------
+
+# ----Child Model Settings-----
 DEFINE_string("data_format","NHWC", "'NHWC or NCHW'")
 DEFINE_string("search_for", "micro","")
-
 DEFINE_integer("batch_size",128,"")
 DEFINE_integer("num_epochs",5," = (10 + 20 + 40 + 80 + 160 +320)")
-
 DEFINE_integer("child_lr_dec_every", 100, "")
 DEFINE_integer("child_num_layers", 15, "Number of layer. IN this case we will calculate 4 conv and 2 pooling layers")
 DEFINE_integer("child_num_cells", 5, "child_num_cells +2 = Number of DAG'S Nodes")
@@ -67,7 +63,9 @@ DEFINE_string("child_skip_pattern", None, "Must be ['dense', None]")
 DEFINE_boolean("child_use_aux_heads", True, "Should we use an aux head")
 DEFINE_boolean("child_sync_replicas", False, "To sync or not to sync.")
 DEFINE_boolean("child_lr_cosine", True, "Use cosine lr schedule")
+# --------------------------
 
+# ------ Controller Settings ------
 DEFINE_float("controller_lr", 0.001, "")
 DEFINE_float("controller_lr_dec_rate", 1.0, "")
 DEFINE_float("controller_keep_prob", 0.5, "")
@@ -88,9 +86,13 @@ DEFINE_boolean("controller_search_whole_channels", True, "")
 DEFINE_boolean("controller_sync_replicas", True, "To sync or not to sync.")
 DEFINE_boolean("controller_training", False, "")
 DEFINE_boolean("controller_use_critic", False, "")
+# --------------------------
 
+
+# ------ Logger Settings ------
 DEFINE_integer("log_every", 50, "How many steps to log")
 DEFINE_integer("eval_every_epochs", 1, "How many epochs to eval")
+# --------------------------
 
 channel = FLAGS.channel
 

@@ -22,7 +22,7 @@ flags = tf.app.flags
 FLAGS = flags.FLAGS
 
 # ----- Experiment Settings -----
-DEFINE_string("output_dir", "./output" , "")
+DEFINE_string("output_dir", "./output-mnist-search" , "")
 DEFINE_string("train_data_dir", "./data/mnist/train", "")
 DEFINE_string("val_data_dir", "./data/mnist/valid", "")
 DEFINE_string("test_data_dir", "./data/mnist/test", "")
