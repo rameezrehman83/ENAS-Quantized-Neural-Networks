@@ -206,4 +206,60 @@ class MicroController(Controller):
       anchors_w_1,
       arc_seq,
       tf.constant([0.0], dtype=tf.float32, name="entropy"),
-      tf.constant([0.0], dtype=tf.float32, name="l
+      tf.constant([0.0], dtype=tf.float32, name="log_prob"),
+    ]
+    loop_outputs = tf.while_loop(_condition, _body, loop_vars,
+                                 parallel_iterations=1) 
+
+    arc_seq = loop_outputs[-3].stack()
+    arc_seq = tf.reshape(arc_seq, [-1])
+    entropy = tf.reduce_sum(loop_outputs[-2])
+    log_prob = tf.reduce_sum(loop_outputs[-1])
+
+    last_c = loop_outputs[-7]
+    last_h = loop_outputs[-6]
+
+    return arc_seq, entropy, log_prob, last_c, last_h
+
+  def build_trainer(self, child_model):
+    child_model.build_valid_rl()
+    self.valid_acc = (tf.to_float(child_model.valid_shuffle_acc) /
+                      tf.to_float(child_model.batch_size))
+    self.reward = self.valid_acc 
+
+    if self.entropy_weight is not None:
+      self.reward += self.entropy_weight * self.sample_entropy
+
+    self.sample_log_prob = tf.reduce_sum(self.sample_log_prob) 
+    self.baseline = tf.Variable(0.0, dtype=tf.float32, trainable=False)
+    baseline_update = tf.assign_sub(
+      self.baseline, (1 - self.bl_dec) * (self.baseline - self.reward)) 
+
+    with tf.control_dependencies([baseline_update]):
+      self.reward = tf.identity(self.reward)
+
+    self.loss = self.sample_log_prob * (self.reward - self.baseline)
+    self.train_step = tf.Variable(0, dtype=tf.int32, trainable=False, name="train_step")
+
+    tf_variables = [var for var in tf.trainable_variables() if var.name.startswith(self.name)]
+    print("-" * 80)
+    for var in tf_variables:
+      print(var)
+
+    self.train_op, self.lr, self.grad_norm, self.optimizer = get_train_ops(
+      self.loss,
+      tf_variables,
+      self.train_step,
+      clip_mode=self.clip_mode,
+      grad_bound=self.grad_bound,
+      l2_reg=self.l2_reg,
+      lr_init=self.lr_init,
+      lr_dec_start=self.lr_dec_start,
+      lr_dec_every=self.lr_dec_every,
+      lr_dec_rate=self.lr_dec_rate,
+      optim_algo=self.optim_algo,
+      sync_replicas=self.sync_replicas,
+      num_aggregate=self.num_aggregate,
+      num_replicas=self.num_replicas)
+
+    self.skip_rate = tf.constant(0.0, dtype=tf.float32)

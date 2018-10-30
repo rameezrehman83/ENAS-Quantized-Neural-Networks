@@ -12,9 +12,9 @@ from binarize.binary_layers import BinaryDense, BinaryConv2D, DepthwiseBinaryCon
 from ternarize.ternary_layers import TernaryDense, TernaryConv2D, DepthwiseTernaryConv2D
 from quantize.quantized_layers import QuantizedConv2D, QuantizedDense, DepthwiseQuantizedConv2D
 from keras.layers import Activation
-from utils import count_model_params
-from utils import get_train_ops
-from common_ops import create_weight
+from enas.utils import count_model_params
+from enas.utils import get_train_ops
+from enas.common_ops import create_weight
 from keras.activations import relu
 from quantize.quantized_ops import quantized_relu as quantized_relu_op
 from quantize.quantized_ops import quantized_tanh as quantized_tanh_op
@@ -344,8 +344,6 @@ class MicroChild(Model):
         """Makes sure layers[0] and layers[1] have the same shapes."""
         hw = [self._get_HW(layer) for layer in layers]  
         c = [self._get_C(layer) for layer in layers]  
-        print("hw", hw)
-        print("c", c)
 
         with tf.variable_scope("calibrate"):
             x = layers[0]  
@@ -541,7 +539,6 @@ class MicroChild(Model):
             with tf.variable_scope("sep_conv_{}".format(conv_id)):
                 w_depthwise = create_weight("w_depth", [f_size, f_size, inp_c, 1])
                 w_pointwise = create_weight("w_point", [1, 1, inp_c, out_filters])
-                print("f_size: ", f_size)
                 if(type_op == "quantize"):
                     x = quant_activation(x)
                     x = quant_dep_conv2d(x, [w_depthwise, w_pointwise], f_size, out_filters, conv_strides = stride)
@@ -633,13 +630,11 @@ class MicroChild(Model):
                         inp_c = self._get_C(x)
                         if x_op == 2:
                             x = tf.identity(x)
-                            print("type x:", x)
                             x = tf.layers.average_pooling2d(
                                 x, [3, 3], [x_stride, x_stride], "SAME",
                                 data_format=self.actual_data_format)
                         else:
                             x = tf.identity(x)
-                            print("type x:", x)
                             x = tf.layers.max_pooling2d(
                                 x, [3, 3], [x_stride, x_stride], "SAME",
                                 data_format=self.actual_data_format)
@@ -942,21 +937,12 @@ class MicroChild(Model):
         logits = self._model(self.x_train, is_training=True)
         # logits = tf.reshape(logits, [-1, 10])
         self.y_train_hot = tf.one_hot(self.y_train, 10, dtype =tf.int32, on_value= 1, off_value= -1)
-        print("Logits shape: ", logits)
-        print("Y_train shape: ", self.y_train_hot)
 
         # using squared_hinge loss 
         self.loss = tf.reduce_mean(tf.losses.hinge_loss(self.y_train_hot, logits))
 
-        # log_probs = tf.nn.sparse_softmax_cross_entropy_with_logits(
-        #     logits=logits, labels=self.y_train)  
-
-        # self.loss = tf.reduce_mean(log_probs)  
-
         if self.use_aux_heads:
-            # log_probs = tf.nn.sparse_softmax_cross_entropy_with_logits(
-            #     logits=self.aux_logits, labels=self.y_train)
-            # self.aux_loss = tf.reduce_mean(log_probs)
+
             self.aux_loss = tf.losses.hinge_loss(self.y_train_hot, self.aux_logits, reduction = tf.losses.Reduction.MEAN)
             train_loss = self.loss + 0.4 * self.aux_loss
         else:

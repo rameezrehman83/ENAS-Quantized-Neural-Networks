@@ -15,7 +15,7 @@ from enas.utils import DEFINE_integer
 from enas.utils import DEFINE_string
 from enas.utils import print_user_flags
 
-import enas.data_utils
+from enas import data_utils_mnist
 from enas.micro_controller import MicroController
 from enas.micro_child import MicroChild
 
@@ -225,7 +225,7 @@ def get_ops(images, labels):
 
 
 def train():
-    images, labels = data_utils.read_data(FLAGS.train_data_dir,
+    images, labels = data_utils_mnist.read_data(FLAGS.train_data_dir,
                                           FLAGS.val_data_dir,
                                           FLAGS.test_data_dir,
                                           FLAGS.channel,
