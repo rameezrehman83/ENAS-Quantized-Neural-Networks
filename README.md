@@ -1,34 +1,24 @@
 # Efficient Neural Architecture Search with Quantized Neural Networks
 
-**This project combines the architecture search strategy from [Efficient Neural Architecture Search][1] with the search space of [Quantized Neural Networks][2].** 
-
+**This project combines the architecture search strategy (only micro) from [Efficient Neural Architecture Search][1] with the search space of [Quantized Neural Networks][2].** 
 
 
 Introduction
 ------------
-Neural Architecture Search is a sub-field of AutoML, which garnered popularity after Neural Architecture Search with RL showed promising results. 
+Efficient Neural Architecture Search recently optimized a major computational bottleneck of NAS algorithms, it does so by sharing (reusing) parameters across child models and delivers strong empirical performance. 
 
-ENAS shares parameters across child models that allows for strong empirical performance, and delivers strong empirical performance. 
+In ENAS, a controller discovers neural network architectures by searching for an optimal subgraph within a large computational graph. These child models are sub-graphs selected from a large computational graph which can be visualized as a directed acyclic graph. 
 
-The bottleneck of using NAS remains the computational resources needed for it, ENAS provides a very efficient way to cope up with these drawbacks by reusing parameters across child models by sharing them. 
 
-These child models are sub-graphs selected from a large computational graph which can be visualized as a directed acyclic graph. 
-
-In ENAS, a controller discovers neural network architectures by searching for an optimal subgraph within a large computational graph. 
-
-The controller is trained with policy gradient to select a subgraph that maximizes the expected reward on a validation set. 
-
-Meanwhile the model corresponding to the selected subgraph is trained to minimize a canonical cross entropy loss. Sharing parameters among child models allows ENAS to deliver strong empirical performances,
+The controller is trained with policy gradient to select a subgraph that maximizes the expected reward on a validation set. Meanwhile, the model corresponding to the selected subgraph is trained to minimize a canonical cross entropy loss. Sharing parameters among child models allows ENAS to deliver strong empirical performances,
 
 
 <p align="center">
-  <img src="https://imgur.com/u5ALF0u.png">
+  <img src="https://imgur.com/PO53CTS.png">
 </p>
 
 
-Binarized Neural Networks with binary weights and activations at run-time drastically reduce memory size and accesses, and replace most arithmetic operations with bit-wise operations which substantially improve power-efficiency. Both the weights and the activations are constrained to either +1 or -1. 
-
-Binarization function used in the experiment is deterministic binary-tanh which is placed in [```binary_ops.py```][3]. 
+During the forward pass, Quantized Neural Networks drastically reduce memory size and accesses, and replace most arithmetic operations with bit-wise operations. As a result, power consumption is expected to be drastically reduced.
 
 
 Project Setup 
