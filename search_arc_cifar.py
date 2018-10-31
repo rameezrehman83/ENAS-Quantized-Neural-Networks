@@ -1,6 +1,5 @@
 import os
 import sys
-os.environ["CUDA_VISIBLE_DEVICES"]= sys.argv[1]
 import shutil
 import sys
 import time
